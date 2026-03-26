@@ -93,7 +93,7 @@ def build(payload_path=None, save_input=None, shard='both', tag=None):
         print('ERROR: No .meta files found')
         sys.exit(1)
 
-    output = os.path.join(BUILD_DIR, 'savedata_meta.dat')
+    output = os.path.join(BUILD_DIR, 'savedata.dat')
     output_data = dst_save.serialize_save(root)
     open(output, 'wb').write(output_data)
     print(f'[*] Output: {output} ({len(output_data)} bytes)')
