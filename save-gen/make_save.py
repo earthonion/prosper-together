@@ -4,7 +4,7 @@
 Usage:
   python3 make_save.py
   python3 make_save.py --payload exploit/payload_us_eu.lua
-  python3 make_save.py --payload exploit/payload_us_eu.lua -w dryenyen
+  python3 make_save.py --payload exploit/payload_us_eu.lua -w my_watermark
 """
 import os, sys, base64, hashlib, time, getpass
 import socket as _socket
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     parser.add_argument('--shard', choices=['master', 'caves', 'both'],
                         default='both', help='Which shard (default: both)')
     parser.add_argument('-w', '--watermark', default=None,
-                        help='Custom tag string for watermark (e.g. -w dryenyen)')
+                        help='Custom tag string for watermark')
     args = parser.parse_args()
     build(payload_path=args.payload, save_input=args.save, shard=args.shard,
           tag=args.watermark)
