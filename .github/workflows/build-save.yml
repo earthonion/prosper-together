@@ -20,8 +20,11 @@ jobs:
           cd save-gen
           python3 make_save.py -w "github-actions"
 
+      - name: Rename output
+        run: cp save-gen/build_dst/savedata_meta.dat save-gen/build_dst/savedata.dat
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: savedata_meta
-          path: save-gen/build_dst/savedata_meta.dat
+          name: savedata
+          path: save-gen/build_dst/savedata.dat
