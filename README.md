@@ -150,7 +150,7 @@ Common type tags:
 
 #### `call(func_lo, func_hi, a1, a2, a3, a4)` → `ret_lo, ret_hi`
 
-Call an arbitrary function at an absolute address via ROP. Arguments and return value are split into 32-bit lo/hi pairs. Pass 64-bit arguments as `{lo, hi}` tables.
+Call an arbitrary function at an absolute address via ROP. Up to 4 arguments (rdi, rsi, rdx, rcx). Arguments and return value are split into 32-bit lo/hi pairs. Pass 64-bit arguments as `{lo, hi}` tables.
 
 ```lua
 -- Call a function at a known address
@@ -160,6 +160,25 @@ local ret_lo, ret_hi = call(func_lo, func_hi, arg1, arg2)
 local getpid_lo = libc_base_lo + 0x12345
 local getpid_hi = libc_base_hi
 local pid = call(getpid_lo, getpid_hi)
+```
+
+#### `call_ctx(func_lo, func_hi, a1, a2, a3, a4, a5, a6)` → `ret_lo, ret_hi`
+
+Call an arbitrary function with up to 6 arguments (rdi, rsi, rdx, rcx, r8, r9) via `setcontext`. Use this when you need more than 4 args. Allocates a 64KB call stack for the target function.
+
+```lua
+-- Call a function with 6 arguments
+local ret_lo, ret_hi = call_ctx(func_lo, func_hi, a1, a2, a3, a4, a5, a6)
+
+-- Example: call mmap(NULL, 0x4000, PROT_RW, MAP_PRIVATE|MAP_ANON, -1, 0) via libc
+local mmap_lo = libc_base_lo + 0xABCDE
+local mmap_hi = libc_base_hi
+local addr_lo, addr_hi = call_ctx(mmap_lo, mmap_hi, 0, 0x4000, 3, 0x1022, -1, 0)
+
+-- Example: call memcpy(dst, src, len)  (works with call too, but call_ctx also fine)
+local memcpy_lo = libc_base_lo + 0x32600
+local memcpy_hi = libc_base_hi
+call_ctx(memcpy_lo, memcpy_hi, dst_addr, src_addr, length)
 ```
 
 ### Syscalls
