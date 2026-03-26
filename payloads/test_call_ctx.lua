@@ -12,11 +12,11 @@
 --
 -- Send: cat payloads/test_call_ctx.lua | nc -q 0 <ps5_ip> 9066
 
-local call_ctx = rawget(_G, "call_ctx")
+local call = rawget(_G, "call")
 local plog = rawget(_G, "prosper_log") or function() end
 
-if not call_ctx then
-    error("call_ctx not available - rebuild save with updated payload")
+if not call then
+    error("call not available - rebuild save with updated payload")
 end
 
 plog("test_call_ctx: calling 0x0000DEAD_DEADBEEF")
@@ -25,7 +25,7 @@ plog("  rdx=0x3333CCCC_CCCC3333  rcx=0x4444DDDD_DDDD4444")
 plog("  r8 =0x5555EEEE_EEEE5555  r9 =0x6666FFFF_FFFF6666")
 plog("  THIS WILL CRASH - check crash dump registers")
 
-call_ctx(
+call(
     0xDEADBEEF, 0x0000DEAD,          -- rip = 0x0000DEAD_DEADBEEF
     {0xAAAA1111, 0x1111AAAA},         -- rdi = 0x1111AAAA_AAAA1111
     {0xBBBB2222, 0x2222BBBB},         -- rsi = 0x2222BBBB_BBBB2222

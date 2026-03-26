@@ -1,13 +1,12 @@
 -- FTP Server for PS5 DST Exploit
 -- Send via: cat ftp_server.lua | nc -q 0 <ps5_ip> 9066
 --
--- Uses payload_us_eu.lua primitives (syscall, syscall_ctx, etc.)
+-- Uses payload_us_eu.lua primitives (syscall, call, etc.)
 -- Supports: USER, PASS, SYST, FEAT, PWD, CWD, CDUP, TYPE, PASV, PORT,
 --           LIST, RETR, STOR, SIZE, DELE, MKD, RMD, RNFR, RNTO, REST,
 --           SITE CHMOD, QUIT
 
 local sc  = rawget(_G, "syscall")
-local scx = rawget(_G, "syscall_ctx")
 local gsa = rawget(_G, "get_str_addr")
 local rba = rawget(_G, "read_bytes_abs")
 local r32 = rawget(_G, "read_u32_abs")
@@ -658,10 +657,8 @@ plog("FTP: starting on port " .. FTP_PORT)
 srv_fd = sc(SYS_socket, AF_INET, SOCK_STREAM, 0)
 if is_err(srv_fd) then error("socket() failed") end
 
--- SO_REUSEADDR (5 args = use syscall_ctx)
-if scx then
-    scx(SYS_setsockopt, srv_fd, SOL_SOCKET, SO_REUSEADDR, int_ptr(1), 4)
-end
+-- SO_REUSEADDR
+sc(SYS_setsockopt, srv_fd, SOL_SOCKET, SO_REUSEADDR, int_ptr(1), 4)
 
 local bind_addr = make_sockaddr_in(FTP_PORT)
 if is_err(sc(SYS_bind, srv_fd, bind_addr, 16)) then
