@@ -1,6 +1,5 @@
 # Prosper Together
-
-PS5 userland exploit for Don't Starve Together (US + EU). Achieves code execution through save file injection, LuaJIT bytecode manipulation, and ROP chains.
+PS4/PS5 userland exploit for Don't Starve Together (US + EU). Achieves code execution through save file injection, LuaJIT bytecode manipulation, and ROP chains.
 
 ## How It Works
 
