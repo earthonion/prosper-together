@@ -17,11 +17,7 @@ cd save-gen
 python3 make_save.py
 # Output: build_dst/savedata.dat
 ```
-
-Copy `build_dst/savedata.dat` to USB as:
-```
-PS5/SAVEDATA/<title_id>/savedata.dat
-```
+Replace savedata.dat in existing save with the on in releases
 
 Import the save via PS5 Settings > Saved Data > USB Drive.
 
