@@ -18,6 +18,8 @@ python3 make_save.py
 # Output: build_dst/savedata.dat
 ```
 
+Go to host a game
+
 ### Send payloads at runtime
 
 Once the game boots with the injected save, the TCP loader listens on port 9066. Send any Lua script:
