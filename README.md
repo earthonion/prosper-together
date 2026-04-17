@@ -1,6 +1,9 @@
 # Prosper Together
 PS4/PS5 userland exploit for Don't Starve Together (US + EU). Achieves code execution through save file injection, LuaJIT bytecode manipulation, and ROP chains.
 
+**Requires Game Update 1.12**
+- i made this based around the misprint of the game. other version may work if offsets get ported.
+
 ## How It Works
 
 1. **Save injection** - `make_save.py` injects Lua code into the `.meta` files of a DST save
