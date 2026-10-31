@@ -85,7 +85,7 @@ def build(payload_path=None, save_input=None, shard='both', tag=None):
         for child in session.children:
             if isinstance(child, dst_save.SaveFile) and child.name.endswith('.meta'):
                 orig_size = len(child.content)
-                child.content = full_content
+                child.content = full_content.ljust(orig_size, b' ') if len(full_content) <= orig_size else full_content
                 print(f'  [+] {shard_name}/{child.name}: {orig_size} -> {len(child.content)} bytes')
                 injected += 1
 

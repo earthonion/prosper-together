@@ -11,7 +11,60 @@ PS4/PS5 userland exploit for Don't Starve Together (US + EU). Achieves code exec
 3. **Primitives** - LuaJIT bytecode manipulation gives `fakeobj`/`addrof`, which bootstrap arbitrary read/write, then ROP-based `call` and `syscall`
 4. **TCP loader** - A socket server on port 9066 accepts and executes Lua scripts at runtime
 
-## Quick Start
+## PS4 (US)
+
+`save-gen/exploit/payload_us_eu_ps4.lua` is the PS4 US payload. It includes onscreen `DebugStringScreen` logging, PS4 libkernel/syscall resolution, native ROP calls, six-argument `setcontext` calls, and the TCP Lua loader on port 9066.
+
+### Build and load the PS4 save
+
+1. If using HTTP logging, replace `192.168.0.107` in the payload with your computer's LAN address.
+2. Start the log/REPL server from the repository root:
+
+   ```bash
+   python3 save-gen/logserver.py
+   ```
+
+3. Build the save using the original metadata injector:
+
+   ```bash
+   cd save-gen
+   python3 make_save.py --payload exploit/payload_us_eu_ps4.lua
+   ```
+
+   The output is `build_dst/savedata.dat`. Package it with your account's `sce_sys` data using your normal PS4 save tool, restore it, and host the world. Startup messages appear both onscreen and in the server log.
+
+### Send Lua over TCP
+
+Once port 9066 is listening, send a Lua script from your computer:
+
+```bash
+printf 'return "PS4_TCP_OK"\n' | nc -q 0 <ps4_ip> 9066
+# => PS4_TCP_OK
+
+cat payloads/ftp_server.lua | nc -q 0 <ps4_ip> 9066
+```
+
+### Use the HTTP REPL
+
+The metadata REPL (`exploit/meta_repl.lua`) is a small 486-byte-compatible bootstrap. It displays `META REPL` and polls the server for Lua without requiring a scheduler. The full `exploit/repl.lua` is also included for world-save REPL use.
+
+Set your computer's LAN address in `exploit/meta_repl.lua`, start `save-gen/logserver.py`, then build and restore the REPL save:
+
+```bash
+cd save-gen
+python3 make_save.py --payload exploit/meta_repl.lua
+```
+
+Queue a Lua file from the repository root. Using a temporary file and renaming it prevents the server from reading a partial upload:
+
+```bash
+cp script.lua save-gen/build_dst/repl_command.tmp
+mv save-gen/build_dst/repl_command.tmp save-gen/build_dst/repl_command.lua
+```
+
+The server forwards the file to the game and prints log messages and results. No save rebuild is needed for subsequent Lua files. Native payloads still require the world to be hosted so that `scheduler` and `TheNet` are available.
+
+## PS5 Quick Start
 
 ### Build the save
 
